@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eee8dc">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>GODS — The Digital Notebook</title>
+<style>
+:root{
+ --bg:#e9e3d8;--paper:#fbf9f3;--paper2:#f4f0e7;--ink:#292820;--muted:#777466;
+ --line:#ded8ca;--gold:#b18b45;--gold2:#e7d5a8;--rose:#c98282;--sage:#8e9b83;
+ --blue:#8296a6;--plum:#8d7892;--shadow:0 14px 38px #443c2b20;--radius:18px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{max-width:1100px;margin:auto;min-height:100dvh;padding:12px;display:flex;flex-direction:column;gap:12px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 4px}
+.brand{display:flex;align-items:center;gap:10px}
+.brandmark{width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#f6e9c9,#b18b45);display:grid;place-items:center;font-size:22px;box-shadow:0 4px 12px #78623b30}
+.brand h1{font:700 17px/1.1 Georgia,serif;letter-spacing:.16em;margin:0}
+.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.2em;margin-top:4px}
+.top-actions{display:flex;gap:7px}
+.iconbtn,.btn{border:1px solid var(--line);background:#fbf9f3;color:var(--ink);border-radius:12px;padding:9px 12px}
+.iconbtn{width:40px;height:40px;padding:0;font-size:17px}
+.layout{display:grid;grid-template-columns:190px minmax(0,1fr);gap:14px;align-items:stretch;flex:1}
+.sidebar{background:#302f29;color:#f8f3e8;border-radius:20px;padding:15px 10px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.side-label{font-size:9px;letter-spacing:.2em;color:#c7bfae;padding:8px 9px 3px}
+.nav{border:0;background:transparent;color:#e9e2d5;text-align:left;border-radius:12px;padding:11px 10px;display:flex;align-items:center;gap:10px;font-size:13px}
+.nav .em{width:20px;text-align:center;font-size:16px}
+.nav.active{background:#e9dfc9;color:#302f29;font-weight:700}
+.sidebar-foot{margin-top:auto;border-top:1px solid #ffffff22;padding:12px 8px 4px;color:#c7bfae;font-size:10px;line-height:1.5}
+.book{min-width:0;background:var(--paper);border-radius:8px 20px 20px 8px;box-shadow:var(--shadow);position:relative;overflow:hidden;border-left:9px solid #d4c8ac}
+.book:before{content:"";position:absolute;left:8px;top:0;bottom:0;width:16px;background:repeating-linear-gradient(to bottom,transparent 0 28px,#b7aa8e 29px 31px,transparent 32px 44px);opacity:.65;pointer-events:none}
+.book-inner{padding:22px 22px 26px 35px;min-height:690px;background-image:radial-gradient(#ded8ca 0.7px,transparent .8px);background-size:18px 18px}
+.pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:17px}
+.eyebrow{font-size:9px;letter-spacing:.22em;color:var(--gold);font-weight:800;text-transform:uppercase}
+h2{font:600 clamp(24px,4vw,34px)/1.1 Georgia,serif;margin:5px 0 4px}
+.subtitle{font-size:12px;color:var(--muted)}
+.datebox{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.datebox input{max-width:145px;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fffdf8;color:var(--ink)}
+.panel{background:#fffdf8d9;border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:13px}
+.panel h3{font:600 16px Georgia,serif;margin:0 0 10px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.panel-head h3{margin:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+textarea,.field{width:100%;border:1px solid var(--line);border-radius:11px;background:#fffefa;color:var(--ink);padding:11px;outline:none}
+textarea{min-height:115px;resize:vertical;line-height:1.55}
+textarea:focus,.field:focus{border-color:var(--gold);box-shadow:0 0 0 3px #b18b4518}
+.row{display:flex;gap:7px;align-items:center}
+.row .field{min-width:0;flex:1}
+.btn.primary{background:#37362f;color:#fff8eb;border-color:#37362f}
+.btn.gold{background:#e9d9b5;border-color:#d5c294}
+.btn.small{padding:7px 10px;font-size:12px}
+.list{display:flex;flex-direction:column;gap:7px}
+.item{display:flex;align-items:center;gap:9px;background:#fffefa;border:1px solid var(--line);border-radius:11px;padding:9px 10px;font-size:13px}
+.item input[type=checkbox]{accent-color:var(--sage);width:18px;height:18px}
+.item .tasktext{flex:1;overflow-wrap:anywhere}
+.item.done .tasktext{text-decoration:line-through;color:#999}
+.del{border:0;background:transparent;color:#9b8178;font-size:17px;padding:2px 5px}
+.empty{color:#938d7f;font-size:12px;padding:10px;text-align:center}
+.moods{display:flex;gap:7px;flex-wrap:wrap}
+.mood{border:1px solid var(--line);background:#fffefa;border-radius:12px;padding:8px 10px;font-size:20px}
+.mood.active{border-color:var(--gold);background:#f3e8cf}
+.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{padding:12px;border-radius:13px;background:var(--paper2);text-align:center}
+.stat b{display:block;font:22px Georgia,serif}.stat span{font-size:10px;color:var(--muted)}
+.section-tabs{display:flex;gap:7px;overflow:auto;padding:2px 0 10px;scrollbar-width:none}
+.section-tabs button{white-space:nowrap;border:1px solid var(--line);background:#fffefa;border-radius:999px;padding:8px 12px;font-size:11px}
+.section-tabs button.active{background:#37362f;color:#fff8eb;border-color:#37362f}
+.binder-banner{border-radius:14px;background:linear-gradient(110deg,#eee4ce,#f8f3e8 55%,#e8e1ed);padding:15px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.binder-banner strong{font:600 17px Georgia,serif}.binder-banner small{display:block;color:var(--muted);margin-top:4px;font-size:11px}
+.divider-list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.divider-card{background:#fffefa;border:1px solid var(--line);border-radius:13px;padding:13px;text-align:left;min-height:88px}
+.divider-card b{display:block;font:600 15px Georgia,serif;margin:5px 0}.divider-card small{color:var(--muted);font-size:10px}
+.note-card{border-left:3px solid var(--gold);background:#fffefa;padding:10px 12px;border-radius:0 10px 10px 0;margin:7px 0;font-size:12px}
+.habitrow{display:grid;grid-template-columns:1fr repeat(7,28px);gap:5px;align-items:center;font-size:11px;padding:7px 0;border-bottom:1px solid #eee9df}
+.habitrow input{accent-color:var(--sage);width:16px;height:16px}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.calday,.calhead{padding:9px 2px;text-align:center;font-size:11px;border-radius:9px}
+.calhead{color:var(--muted);font-weight:700}
+.calday{background:#fffefa;border:1px solid var(--line);min-height:38px}
+.calday.today{background:#e9dfc9;border-color:var(--gold);font-weight:800}
+.calday.selected{outline:2px solid var(--rose)}
+.sticker-row{display:flex;gap:8px;flex-wrap:wrap}
+.sticker{border:1px solid var(--line);border-radius:12px;background:#fffefa;padding:9px;font-size:22px}
+.footerline{display:flex;justify-content:space-between;color:#9b9486;font-size:9px;letter-spacing:.12em;margin-top:12px}
+.mobile-nav{display:none}
+@media(max-width:720px){
+ .app{padding:8px;gap:8px}.topbar{padding:4px 2px}.brandmark{width:37px;height:37px}.brand h1{font-size:15px}
+ .layout{display:block}.sidebar{display:none}.book{border-left-width:7px;border-radius:6px 16px 16px 6px}.book-inner{padding:17px 13px 20px 25px;min-height:calc(100dvh - 150px)}
+ .mobile-nav{display:flex;position:sticky;bottom:0;z-index:5;background:#302f29;border-radius:16px;padding:7px;gap:3px;overflow-x:auto;box-shadow:var(--shadow)}
+ .mobile-nav .nav{flex:1;min-width:62px;justify-content:center;flex-direction:column;gap:3px;padding:7px 5px;font-size:9px}
+ .mobile-nav .nav .em{font-size:17px}.mobile-nav .nav.active{background:#e9dfc9;color:#302f29}
+ .grid2{grid-template-columns:1fr}.pagehead{align-items:flex-start}.datebox input{max-width:125px}
+ .panel{padding:12px}.divider-list{grid-template-columns:1fr 1fr}
+ .statrow{gap:6px}.stat{padding:9px 4px}
+}
+@media(min-width:721px){.mobile-nav{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+ <header class="topbar">
+  <div class="brand"><div class="brandmark">☼</div><div><h1>G O D S</h1><small>THE DIGITAL NOTEBOOK</small></div></div>
+  <div class="top-actions"><button class="iconbtn" id="exportBtn" title="Export backup">↥</button><button class="iconbtn" id="importBtn" title="Import backup">↧</button><button class="iconbtn" id="themeBtn" title="Change accent">✧</button><input id="importFile" type="file" accept="application/json" hidden></div>
+ </header>
+ <div class="layout">
+  <aside class="sidebar">
+   <div class="side-label">YOUR NOTEBOOK</div>
+   <button class="nav active" data-page="today"><span class="em">☀️</span>Today</button>
+   <button class="nav" data-page="tasks"><span class="em">☑️</span>To-do list</button>
+   <button class="nav" data-page="notes"><span class="em">✒️</span>Notes</button>
+   <button class="nav" data-page="calendar"><span class="em">▦</span>Calendar</button>
+   <div class="side-label">THE BINDER</div>
+   <button class="nav" data-page="binder"><span class="em">📚</span>My sections</button>
+   <button class="nav" data-page="habits"><span class="em">🌱</span>Habits</button>
+   <button class="nav" data-page="goals"><span class="em">🏛️</span>Goals</button>
+   <button class="nav" data-page="ideas"><span class="em">✨</span>Ideas & inspiration</button>
+   <div class="sidebar-foot">OFFLINE-FIRST • YOUR DATA STAYS ON THIS DEVICE<br>✦ A little order, a little magic.</div>
+  </aside>
+  <main class="book"><div class="book-inner" id="content"></div></main>
+ </div>
+ <nav class="mobile-nav">
+  <button class="nav active" data-page="today"><span class="em">☀️</span>Today</button>
+  <button class="nav" data-page="tasks"><span class="em">☑️</span>Tasks</button>
+  <button class="nav" data-page="notes"><span class="em">✒️</span>Notes</button>
+  <button class="nav" data-page="calendar"><span class="em">▦</span>Dates</button>
+  <button class="nav" data-page="binder"><span class="em">📚</span>Binder</button>
+  <button class="nav" data-page="more"><span class="em">⋯</span>More</button>
+ </nav>
+</div>
+<script>
+(()=> {
+const $=s=>document.querySelector(s), content=$('#content');
+const today=()=>new Date().toISOString().slice(0,10);
+const fresh=()=>({days:{},tasks:[],notes:[],habits:[],habitChecks:{},goals:[],ideas:[],sections:[
+ {id:'school',name:'School & Study',icon:'📚',color:'#8296a6',desc:'Lessons, reviewers and assignments'},
+ {id:'personal',name:'Personal',icon:'🌷',color:'#c98282',desc:'Thoughts, plans and little things'},
+ {id:'projects',name:'Projects',icon:'🪄',color:'#8d7892',desc:'Creative work and big ideas'},
+ {id:'reading',name:'Reading Log',icon:'📖',color:'#8e9b83',desc:'Books, quotes and reflections'}
+],accent:0});
+let data;try{data=JSON.parse(localStorage.getItem('godsNotebookV2'))||fresh()}catch(e){data=fresh()}
+let page='today', chosenDate=today(), month=new Date(), activeSection=null;
+const accents=['#b18b45','#9a789d','#9b7770','#718a7c','#71899b'];
+function save(){try{localStorage.setItem('godsNotebookV2',JSON.stringify(data));$('#saveStatus').textContent='Saved on this device'}catch(e){alert('Your browser storage is full. Export a backup and remove older content.')}} 
+function day(d=chosenDate){return data.days[d]||(data.days[d]={note:'',mood:'',tasks:[]})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function head(k,title,sub,withDate=false){return `<div class="pagehead"><div><div class="eyebrow">${k}</div><h2>${title}</h2><div class="subtitle">${sub}</div></div>${withDate?`<div class="datebox"><span class="eyebrow">PAGE DATE</span><input type="date" id="pageDate" value="${chosenDate}"></div>`:''}</div>`}
+function nav(){document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page||(page==='more'&&b.dataset.page==='more')))}
+function render(){
+ nav();
+ const d=day(), pretty=new Date(chosenDate+'T12:00:00').toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+ if(page==='today') content.innerHTML=head('DAILY PAGE','Today, gently.','A fresh page for your plans, thoughts and little wins.',true)+
+ `<div class="binder-banner"><div><strong>${pretty}</strong><small>Make room for what matters today.</small></div><span style="font-size:30px">☼</span></div>
+ <div class="grid2"><section class="panel"><h3>✦ How are you feeling?</h3><div class="moods">${['😊','🙂','😐','🥱','😔','🤩'].map(m=>`<button class="mood ${d.mood===m?'active':''}" data-mood="${m}">${m}</button>`).join('')}</div></section>
+ <section class="panel"><h3>☑ Today's progress</h3><div class="statrow"><div class="stat"><b>${d.tasks.filter(t=>t.done).length}</b><span>DONE</span></div><div class="stat"><b>${d.tasks.length}</b><span>TASKS</span></div><div class="stat"><b>${d.tasks.length?Math.round(d.tasks.filter(t=>t.done).length/d.tasks.length*100):0}%</b><span>PROGRESS</span></div></div></section></div>
+ <section class="panel"><div class="panel-head"><h3>✒️ Notes for today</h3><button class="btn small" data-go="notes">Open notes ↗</button></div><textarea id="dailyNote" placeholder="Brain-dump, reflect, write it all down...">${esc(d.note)}</textarea></section>
+ <section class="panel"><div class="panel-head"><h3>☑️ Today's to-do</h3><button class="btn small" data-go="tasks">All tasks ↗</button></div><div class="list">${d.tasks.slice(0,5).map((t,i)=>taskHTML(t,i,'day')).join('')||'<div class="empty">Nothing on the list yet. Add one small thing ✨</div>'}</div><div class="row" style="margin-top:9px"><input class="field" id="quickTask" placeholder="Add a task..."><button class="btn primary" id="quickAdd">＋</button></div></section>
+ <div class="footerline"><span>GODS • DAILY JOURNAL</span><span id="saveStatus">ALL CHANGES SAVED</span></div>`;
+ if(page==='tasks') content.innerHTML=head('THE CHECKLIST','To-do list','Collect your tasks. Take them one at a time.',true)+
+ `<section class="panel"><h3>＋ Add a task</h3><div class="row"><input class="field" id="taskInput" placeholder="What needs doing?"><input class="field" id="taskDue" type="date" style="max-width:145px"><button class="btn primary" id="taskAdd">Add</button></div></section>
+ <section class="panel"><div class="panel-head"><h3>Your tasks</h3><span class="subtitle">${data.tasks.filter(t=>!t.done).length} remaining</span></div><div class="list">${data.tasks.map((t,i)=>taskHTML(t,i,'all')).join('')||'<div class="empty">Your list is clear. Enjoy the breathing room.</div>'}</div></section>`;
+ if(page==='notes') content.innerHTML=head('THE WRITING DESK','Notes & pages','Keep the useful thoughts. Capture the passing ones.',true)+
+ `<section class="panel"><h3>✒️ New note</h3><input class="field" id="noteTitle" placeholder="Give this note a title..." style="margin-bottom:8px"><textarea id="noteBody" placeholder="Start writing..."></textarea><div class="row" style="margin-top:8px"><select class="field" id="noteSection"><option value="">Unsorted</option>${data.sections.map(s=>`<option value="${s.id}">${esc(s.icon+' '+s.name)}</option>`).join('')}</select><button class="btn primary" id="saveNote">Save note</button></div></section>
+ <section class="panel"><h3>Saved notes</h3>${data.notes.map((n,i)=>`<article class="note-card"><div class="panel-head"><b>${esc(n.title||'Untitled note')}</b><button class="del" data-note-del="${i}">×</button></div><small>${esc(n.date)} · ${esc(sectionName(n.section))}</small><p style="white-space:pre-wrap;line-height:1.5">${esc(n.body)}</p></article>`).join('')||'<div class="empty">Your saved notes will live here.</div>'}</section>`;
+ if(page==='calendar') content.innerHTML=head('THE DATEBOOK','Calendar','Choose a date to open its daily page.')+
+ `<section class="panel"><div class="panel-head"><button class="btn small" id="monthPrev">‹</button><h3 id="monthTitle"></h3><button class="btn small" id="monthNext">›</button></div><div class="calendar" id="calendarGrid"></div></section><section class="panel"><h3>Open a date</h3><div class="row"><input class="field" type="date" id="calendarDate" value="${chosenDate}"><button class="btn primary" id="openDate">Open day</button></div></section>`;
+ if(page==='binder') content.innerHTML=head('YOUR PERSONAL ARCHIVE','The binder','A place for every part of your life.')+
+ `<div class="binder-banner"><div><strong>One binder. Many chapters.</strong><small>Choose a divider to explore or create your own.</small></div><span style="font-size:32px">📚</span></div>
+ <section class="panel"><div class="panel-head"><h3>✦ Your dividers</h3><button class="btn small" id="addSection">＋ New divider</button></div><div class="divider-list">${data.sections.map(s=>`<button class="divider-card" data-section="${s.id}"><span style="font-size:22px">${esc(s.icon)}</span><b>${esc(s.name)}</b><small>${esc(s.desc||'Your pages and notes')}</small></button>`).join('')}</div></section>
+ ${activeSection?sectionView(activeSection):'<div class="empty">Select a divider to see its pages and notes.</div>'}`;
+ if(page==='habits') content.innerHTML=head('SMALL, STEADY THINGS','Habit tracker','Consistency, not perfection.')+
+ `<section class="panel"><h3>＋ Add a habit</h3><div class="row"><input class="field" id="habitInput" placeholder="e.g. Read for 15 minutes"><button class="btn primary" id="habitAdd">Add</button></div></section>
+ <section class="panel"><h3>This week</h3><div id="habitTable"></div></section>`;
+ if(page==='goals') content.innerHTML=head('LOOKING AHEAD','Goals & intentions','Give your hopes a place to land.')+
+ `<section class="panel"><h3>＋ Add a goal</h3><div class="row"><input class="field" id="goalInput" placeholder="A goal I want to work toward..."><input class="field" type="date" id="goalDate" style="max-width:145px"><button class="btn primary" id="goalAdd">Add</button></div></section>
+ <section class="panel"><h3>Your goals</h3><div class="list">${data.goals.map((g,i)=>`<div class="item ${g.done?'done':''}"><input type="checkbox" data-goal-check="${i}" ${g.done?'checked':''}><span class="tasktext">${esc(g.text)} ${g.date?`<small>· ${esc(g.date)}</small>`:''}</span><button class="del" data-goal-del="${i}">×</button></div>`).join('')||'<div class="empty">Write down something you want to make happen.</div>'}</div></section>`;
+ if(page==='ideas') content.innerHTML=head('THE MUSEUM OF MAYBES','Ideas & inspiration','Quotes, sparks, plans and beautiful what-ifs.')+
+ `<section class="panel"><h3>✧ Capture an idea</h3><textarea id="ideaInput" placeholder="An idea worth keeping..."></textarea><div class="row" style="margin-top:8px"><input class="field" id="ideaTag" placeholder="Tag (optional)"><button class="btn primary" id="ideaAdd">Save idea</button></div></section>
+ <section class="panel"><h3>Collected sparks</h3>${data.ideas.map((x,i)=>`<div class="note-card"><div class="panel-head"><small>${esc(x.date)} ${x.tag?'· '+esc(x.tag):''}</small><button class="del" data-idea-del="${i}">×</button></div><div style="white-space:pre-wrap">${esc(x.text)}</div></div>`).join('')||'<div class="empty">Your inspiration collection starts here.</div>'}</section>
+ <section class="panel"><h3>🏛️ A little mythology shelf</h3><div class="sticker-row">${['☼','☾','✦','♔','⚡','🦉','🌙','🪷','🪶','🔱','🦚','🐚','🌿','🗝️'].map(x=>`<span class="sticker">${x}</span>`).join('')}</div><p class="subtitle">A tiny nod to mythologies and celestial symbolism from around the world.</p></section>`;
+ if(page==='more') content.innerHTML=head('MORE NOTEBOOK TOOLS','Your extras','A few helpful corners of your notebook.')+`<section class="panel"><h3>Choose a section</h3><div class="divider-list">${[['habits','🌱','Habit tracker'],['goals','🏛️','Goals'],['ideas','✨','Ideas & inspiration'],['binder','📚','My binder']].map(([p,e,n])=>`<button class="divider-card" data-go="${p}"><span style="font-size:22px">${e}</span><b>${n}</b></button>`).join('')}</div></section><section class="panel"><h3>Backup & privacy</h3><p class="subtitle">Your notebook is stored in this browser on this device. Export a backup regularly if you want to keep a separate copy.</p><button class="btn primary" id="backupAgain">Export my notebook</button></section>`;
+ bind(); if(page==='calendar')drawCalendar();if(page==='habits')drawHabits();
+}
+function taskHTML(t,i,where){return `<div class="item ${t.done?'done':''}"><input type="checkbox" data-task-check="${where}:${i}" ${t.done?'checked':''}><span class="tasktext">${esc(t.text)} ${t.due?`<small>· ${esc(t.due)}</small>`:''}</span><button class="del" data-task-del="${where}:${i}">×</button></div>`}
+function sectionName(id){return data.sections.find(s=>s.id===id)?.name||'Unsorted'}
+function sectionView(id){let s=data.sections.find(x=>x.id===id);if(!s)return '';let ns=data.notes.filter(n=>n.section===id);return `<section class="panel"><div class="panel-head"><h3>${esc(s.icon)} ${esc(s.name)}</h3><button class="btn small" id="closeSection">Close</button></div><p class="subtitle">${esc(s.desc||'')}</p>${ns.map(n=>`<div class="note-card"><b>${esc(n.title)}</b><small> · ${esc(n.date)}</small><p style="white-space:pre-wrap">${esc(n.body)}</p></div>`).join('')||'<div class="empty">No notes in this divider yet. Add a note and assign it here.</div>'}</section>`}
+function drawCalendar(){let y=month.getFullYear(),m=month.getMonth();$('#monthTitle').textContent=month.toLocaleDateString(undefined,{month:'long',year:'numeric'});let first=new Date(y,m,1).getDay(),count=new Date(y,m+1,0).getDate();let cells=['S','M','T','W','T','F','S'].map(x=>`<div class="calhead">${x}</div>`).join('');for(let i=0;i<first;i++)cells+='<div></div>';for(let n=1;n<=count;n++){let d=`${y}-${String(m+1).padStart(2,'0')}-${String(n).padStart(2,'0')}`;cells+=`<button class="calday ${d===today()?'today':''} ${d===chosenDate?'selected':''}" data-caldate="${d}">${n}</button>`}$('#calendarGrid').innerHTML=cells}
+function drawHabits(){let start=new Date();start.setDate(start.getDate()-((start.getDay()+6)%7));let dates=Array.from({length:7},(_,i)=>{let d=new Date(start);d.setDate(start.getDate()+i);return d.toISOString().slice(0,10)});let labels=['M','T','W','T','F','S','S'];let h=`<div class="habitrow"><b>Habit</b>${labels.map(x=>`<b>${x}</b>`).join('')}</div>`;data.habits.forEach((x,i)=>{h+=`<div class="habitrow"><span>${esc(x)}</span>${dates.map((d,j)=>`<input type="checkbox" data-habit="${i}:${d}" ${data.habitChecks[i+'_'+d]?'checked':''}>`).join('')}<button class="del" data-habit-del="${i}">×</button></div>`});$('#habitTable').innerHTML=h+(data.habits.length?'':'<div class="empty">Add a habit to begin your week.</div>')}
+function bind(){
+ $('#pageDate')?.addEventListener('change',e=>{chosenDate=e.target.value||today();render()});
+ $('#dailyNote')?.addEventListener('input',e=>{day().note=e.target.value;save()});
+ document.querySelectorAll('[data-mood]').forEach(b=>b.onclick=()=>{day().mood=b.dataset.mood;save();render()});
+ $('#quickAdd')?.addEventListener('click',()=>{let v=$('#quickTask').value.trim();if(v){day().tasks.push({text:v,done:false});save();render()}});
+ $('#quickTask')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('#quickAdd').click()});
+ $('#taskAdd')?.addEventListener('click',()=>{let v=$('#taskInput').value.trim();if(v){data.tasks.push({text:v,due:$('#taskDue').value,done:false});save();render()}});
+ $('#noteTitle')?.focus?.call;$('#saveNote')?.addEventListener('click',()=>{let body=$('#noteBody').value.trim();if(!body)return;data.notes.unshift({title:$('#noteTitle').value.trim()||'Untitled note',body,section:$('#noteSection').value,date:chosenDate});save();render()});
+ document.querySelectorAll('[data-task-check]').forEach(b=>b.onchange=()=>{let [w,i]=b.dataset.taskCheck.split(':');(w==='day'?day().tasks:data.tasks)[+i].done=b.checked;save();render()});
+ document.querySelectorAll('[data-task-del]').forEach(b=>b.onclick=()=>{let [w,i]=b.dataset.taskDel.split(':');(w==='day'?day().tasks:data.tasks).splice(+i,1);save();render()});
+ document.querySelectorAll('[data-note-del]').forEach(b=>b.onclick=()=>{data.notes.splice(+b.dataset.noteDel,1);save();render()});
+ $('#monthPrev')?.addEventListener('click',()=>{month.setMonth(month.getMonth()-1);drawCalendar()});$('#monthNext')?.addEventListener('click',()=>{month.setMonth(month.getMonth()+1);drawCalendar()});
+ document.querySelectorAll('[data-caldate]').forEach(b=>b.onclick=()=>{chosenDate=b.dataset.caldate;render()});
+ $('#openDate')?.addEventListener('click',()=>{chosenDate=$('#calendarDate').value||today();page='today';render()});
+ $('#addSection')?.addEventListener('click',()=>{let name=prompt('Name your new binder divider:');if(name?.trim()){data.sections.push({id:'s'+Date.now(),name:name.trim(),icon:'✦',desc:'A space for your pages'});save();render()}});
+ document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>{activeSection=b.dataset.section;render()});$('#closeSection')?.addEventListener('click',()=>{activeSection=null;render()});
+ $('#habitAdd')?.addEventListener('click',()=>{let v=$('#habitInput').value.trim();if(v){data.habits.push(v);save();render()}});
+ document.querySelectorAll('[data-habit]').forEach(b=>b.onchange=()=>{data.habitChecks[b.dataset.habit.replace(':','_')]=b.checked;save()});
+ document.querySelectorAll('[data-habit-del]').forEach(b=>b.onclick=()=>{data.habits.splice(+b.dataset.habitDel,1);save();render()});
+ $('#goalAdd')?.addEventListener('click',()=>{let v=$('#goalInput').value.trim();if(v){data.goals.push({text:v,date:$('#goalDate').value,done:false});save();render()}});
+ document.querySelectorAll('[data-goal-check]').forEach(b=>b.onchange=()=>{data.goals[+b.dataset.goalCheck].done=b.checked;save();render()});
+ document.querySelectorAll('[data-goal-del]').forEach(b=>b.onclick=()=>{data.goals.splice(+b.dataset.goalDel,1);save();render()});
+ $('#ideaAdd')?.addEventListener('click',()=>{let v=$('#ideaInput').value.trim();if(v){data.ideas.unshift({text:v,tag:$('#ideaTag').value,date:chosenDate});save();render()}});
+ document.querySelectorAll('[data-idea-del]').forEach(b=>b.onclick=()=>{data.ideas.splice(+b.dataset.ideaDel,1);save();render()});
+ document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{page=b.dataset.go;render()});
+}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>{page=b.dataset.page;activeSection=null;render()}));
+$('#exportBtn').onclick=()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gods-notebook-backup.json';a.click();URL.revokeObjectURL(a.href)};
+$('#backupAgain').onclick=()=>$('#exportBtn').click();
+$('#importBtn').onclick=()=>$('#importFile').click();
+$('#importFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!x.days||!x.sections)throw Error();data=x;save();render();alert('Notebook backup restored.')}catch(err){alert('That backup file could not be read.')}e.target.value=''};
+$('#themeBtn').onclick=()=>{data.accent=(data.accent+1)%accents.length;document.documentElement.style.setProperty('--gold',accents[data.accent]);save()};
+document.documentElement.style.setProperty('--gold',accents[data.accent||0]);
+render();
+if ('serviceWorker' in navigator) {
+ window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+})();
+</script>
+</body></html>
